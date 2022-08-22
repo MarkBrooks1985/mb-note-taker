@@ -17,20 +17,21 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static("public"));
 
-// html routes to be made: GET /notes which returns notes.html
+// get route for sending to the notes.html
 
 app.get("/notes", (req, res) =>
   res.sendFile(path.join(__dirname, "/public/notes.html"))
 );
 
-// GET /api/notes should read the db.json file and return all saved notes as json
+// get route for requesting data
 
 app.get("/api/notes", (req, res) => {
   console.info(`${req.method} request received for notes`);
   readFromFile("./db/db.json").then((data) => res.json(JSON.parse(data)));
 });
 
-// POST /api/notes should recieve a new note to save on the request body and add it to db.json and return the new note to the client
+// post route for adding new notes
+
 app.post("/api/notes", (req, res) => {
   console.info(`${req.method} request received to add a note`);
 
@@ -50,38 +51,27 @@ app.post("/api/notes", (req, res) => {
   }
 });
 
+// deletes the note
+
 app.delete("/api/notes/:id", (req, res) => {
-  console.log(req.params.id);
   removeNote(req.params.id);
   res.send(`${req.method} request to delete a note has been recieved`);
 });
 
-// GET * aka wildcard should return index.html
+// Wildcard route that sends to the index page
 
 app.get("*", (req, res) =>
   res.sendFile(path.join(__dirname, "/public/index.html"))
 );
+
+// writes the data
 
 const writeToFile = (destination, content) =>
   fs.writeFile(destination, JSON.stringify(content, null, 4), (err) =>
     err ? console.error(err) : console.info(`\nData written to ${destination}`)
   );
 
-// find away to make each note a new id (look at npm packages that could do this)
-// DELETE /api/notes/:id should receive a query parameter that contains the id of a note to delete.
-// To delete a note, you'll need to read all notes from the db.json file, remove the note with the given id property, and then rewrite the notes to the db.json file.
-
-// bonus add a functionallity to delete notes on the front end
-
-// expose deleting point which accept a note diary
-
-// read the file
-
-// filter all the notes except the id being deleted
-
-// write back the content to db.json
-
-// look up how to accept parameter, in route
+// listens to the port
 
 app.listen(PORT, () =>
   console.log(`Example app listening at http://localhost:${PORT}`)
