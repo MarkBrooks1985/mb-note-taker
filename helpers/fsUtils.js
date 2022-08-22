@@ -1,5 +1,6 @@
 const fs = require("fs");
 const util = require("util");
+const databaseFile = "./db/db.json";
 
 // Promise version of fs.readFile
 const readFromFile = util.promisify(fs.readFile);
@@ -30,5 +31,18 @@ const readAndAppend = (content, file) => {
     }
   });
 };
+const removeNote = (id) => {
+  fs.readFile(databaseFile, "utf8", (err, data) => {
+    if (err) {
+      console.error(err);
+    } else {
+      const parsedData = JSON.parse(data);
+      console.log(parsedData);
+      const filteredData = parsedData.filter((note) => note.id !== id);
+      // parsedData.push(content);
+      writeToFile(databaseFile, filteredData);
+    }
+  });
+};
 
-module.exports = { readFromFile, writeToFile, readAndAppend };
+module.exports = { readFromFile, writeToFile, readAndAppend, removeNote };

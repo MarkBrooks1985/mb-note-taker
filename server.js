@@ -1,10 +1,13 @@
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
-const { readFromFile, readAndAppend } = require("./helpers/fsUtils");
+const {
+  readFromFile,
+  readAndAppend,
+  removeNote,
+} = require("./helpers/fsUtils");
 const uuidv1 = require("uuid/v1");
 
-// const termData = require("/db/db.json");
 const PORT = 3001;
 
 const app = express();
@@ -47,6 +50,12 @@ app.post("/api/notes", (req, res) => {
   }
 });
 
+app.delete("/api/notes/:id", (req, res) => {
+  console.log(req.params.id);
+  removeNote(req.params.id);
+  res.send(`${req.method} request to delete a note has been recieved`);
+});
+
 // GET * aka wildcard should return index.html
 
 app.get("*", (req, res) =>
@@ -59,6 +68,8 @@ const writeToFile = (destination, content) =>
   );
 
 // find away to make each note a new id (look at npm packages that could do this)
+// DELETE /api/notes/:id should receive a query parameter that contains the id of a note to delete.
+// To delete a note, you'll need to read all notes from the db.json file, remove the note with the given id property, and then rewrite the notes to the db.json file.
 
 // bonus add a functionallity to delete notes on the front end
 
