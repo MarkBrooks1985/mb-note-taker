@@ -8,7 +8,7 @@ const {
 } = require("./helpers/fsUtils");
 const uuidv1 = require("uuid/v1");
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 const app = express();
 
